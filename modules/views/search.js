@@ -5,7 +5,8 @@
 const router = require("express").Router()
 
 router.get("/", (req, res) => {
-    res.render("home", {name:"name"});
+    return res.status(200).json({message:"welcome to e-library!"})
+    // res.render("home", {name:"name"});
 })
 
 
