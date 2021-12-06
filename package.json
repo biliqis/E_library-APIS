@@ -42,6 +42,6 @@
     "tailwindcss": "^2.2.19"
   },
   "engines": {
-    "node": "14.18"
+    "node": "14.x.x"
   }
 }
