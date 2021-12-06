@@ -1,0 +1,135 @@
+body{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Raleway', sans-serif;
+}
+.image {
+    background: 
+    /* top, transparent red, faked with gradient */ 
+    linear-gradient(
+      rgba(43, 40, 98, 0.9), 
+      rgba(43, 40, 98, 0.9)
+    ),
+    /* bottom, image */
+    url(background.png);
+    position: relative;
+    background-size: cover;
+    background-repeat: no-repeat;
+    min-height: 100vh;
+    /* width: 100% */
+}
+
+.home {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 4rem 0;
+}
+
+.logo {
+    font-size: 2.5rem;
+    color: white;
+    /* font-family: Raleway; */
+    font-style: normal;
+    font-weight: 700;
+    line-height: 47px;
+    letter-spacing: 0em;
+    text-align: center;
+    
+}
+
+
+.login {
+    width: 80%;
+    max-width: 70.75rem;
+    margin: 2rem auto 3rem;
+    border-radius: 1rem;
+    background: #FFFFFF;
+    box-shadow: 0px 4px 59px rgba(0, 0, 0, 0.1);
+    padding: 2rem;
+    text-align: center;
+}
+
+.login h1 {
+    font-weight: 600;
+    font-size: 1.75rem;
+    line-height: 33px;
+    margin: 0;
+}
+
+
+.login form {
+    display: grid;
+    grid-column-gap: 3.75rem;
+    grid-template-columns: 1fr;
+}
+
+
+.btn {
+    background: linear-gradient(180deg, #518CFF 0%, #3919B8 100%);
+    border-radius: 4px;
+    width: 100%;
+    max-width: 28.7rem;
+    height: 3.6rem;
+    outline: none;
+    border: none;
+    cursor: pointer;
+    transition: all ease-in-out 3ms;
+    font-weight: 500;
+font-size: 1.4375rem;
+line-height: 1.1;
+text-align: center;
+color: #FFFFFF;
+margin-bottom: 1.5rem;
+}
+
+.btn:hover{
+    transform: scale(1.01);
+}
+
+.form{
+    margin: 3.75rem 0 1.75rem;
+}
+
+.form .material-textfield{
+    margin-bottom: 2rem;
+}
+
+.acc{
+    font-weight: 500;
+font-size: 1.2rem;
+line-height: 1.1;
+color: #6C63FF;
+}
+.acc a{
+    cursor: pointer;
+}
+.acc a:hover{
+    color: #433dbb;
+}
+.admin-login{
+    text-align: center;
+    font-style: italic;
+font-weight: 500;
+font-size: 1.5rem;
+line-height: 1.1;
+color: #FFFFFF;
+text-decoration: none;
+}
+
+.admin-login:hover{
+    color: #433dbb;
+}
+
+@media screen and (min-width: 950px) {
+    .login form {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .login {
+    padding: 3rem 4.6875rem;
+    }
+}
