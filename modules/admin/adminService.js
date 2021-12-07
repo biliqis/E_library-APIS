@@ -2,7 +2,7 @@ const borrowingModel = require("../booksBorrowing/borrowingModel")
 const bookModel = require('../Books/bookModel')
 const ObjectId = require("mongodb").ObjectId;
 const mongoose = require("mongoose")
-
+const {bookIdExists} = require ('../Books/bookService') 
 const AdminService = {};
 
 //GET A SINGLE REQUEST
@@ -21,14 +21,10 @@ AdminService.getSingleRequest = async (req, res) => {
 AdminService.approveBookBorrowingRequest = async (req, res) => {
     try {
         const { borrowedId } = req.params
-        let findPendingBookRequest = await borrowingModel.findById(borrowedId)
-        
+       let findPendingBookRequest = await borrowingModel.findById(borrowedId)
+       if (!findPendingBookRequest) throw new Error("id not found",404)
 
-AdminService.declineBooks = async (req, res)=>{
-    const { borrowedId} = req.params
-    let pendingBooksRequest = await borrowingModel.findById(borrowedId)
-}
-
+       await bookIdExists(new ObjectId(findPendingBookRequest.bookId))
         //FIND THE ACTUAL BOOK
         const book = await bookModel.findById(new ObjectId(findPendingBookRequest.bookId))
 
@@ -74,5 +70,6 @@ AdminService.updatingBook = async (req, res) => {
     return await bookModel.findByIdAndUpdate(new ObjectId(req.params.id), 
         {$inc : {'noOfCopies': +1}}, { new: true })
     }
+
 
 module.exports = AdminService

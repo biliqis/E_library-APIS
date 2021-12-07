@@ -52,7 +52,7 @@ UserService.userSignUp = async (req, res) => {
 		throw new Error("fields do not match",401)
 	}
 	const user = await UserModel.create(req.body);
-	const token = UserService.generateJwt({ user_id: user._id, roles: req.body.roles });
+	const token = UserService.generateJwt({ user_id: user._id, roles: req.body.role });
 	return { user, token };
 
 };

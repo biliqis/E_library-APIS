@@ -121,7 +121,7 @@ booksBorrowingService.userBorrowBookById = async (req,res) => {
         this.startAndEndDates(bookDto.borrowDate,bookDto.numberOfDays)
         let newBorrow = new bookBorrowing(bookDto)
         await newBorrow.save()
-        return res.status(201).send({success:true,message:"request submitted successfully, the moderators will review your request"})
+        return res.status(201).send({success:true,message:"request submitted successfully, the moderators will review your request", newBorrow})
         
     }catch (error){
             console.error(error)

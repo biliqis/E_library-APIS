@@ -11,6 +11,8 @@ const { booksValidator } = require("./bookValidator")
 const { upload } = require('../../util/upload')
 const awsMiddleware = require('../../util/aws_storage')
 // const {parser} = require("../../util/cloud")
+const { bookIdExists } = require('./bookService')
+
 
 const checkIfUserIsAdmin = require('../../middleware/auth.guard');
 const bookController = require("../Books/bookContoller");

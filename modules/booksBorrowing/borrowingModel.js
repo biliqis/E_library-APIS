@@ -36,4 +36,3 @@ const borrowedBookSchema = new mongoose.Schema({
 })
 
 module.exports = mongoose.model("borrowedBook",borrowedBookSchema)
-
