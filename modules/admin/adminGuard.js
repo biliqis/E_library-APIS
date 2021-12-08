@@ -12,7 +12,7 @@ AdminBorrowingGuard.IdExists = async (propId) => {
 AdminBorrowingGuard.checkIfBorrowingExistGuard = async (req, res)=>{
     const { borrowedId } = req.params
     const checkBook = await AdminBorrowingGuard.IdExists(borrowedId)
-    if (!checkBook) return res.status(400).send({message:"this book does not exist"})
+    if (!checkBook) return res.status(400).send({message:"Request does not exist"})
 }
 
 module.exports = AdminBorrowingGuard

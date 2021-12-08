@@ -10,7 +10,15 @@ AdminController.getSingleRequest = async (req, res, next) => {
 
 //APPROVE BORROWED BOOK
 AdminController.approveBookBorrowing = async (req, res) => {
-	return await adminService.approveBookBorrowingRequest(req, res)
+	try{
+		const { requestId } = req.params;
+		console.log(requestId)
+		const data = await adminService.approveBookBorrowingRequest(requestId)
+		return res.status(200).json({ message: "Request has been approved", data })
+	} catch(err){
+		
+		res.status(500).send(err.message);
+	}
 }
 
 //GET ALL BORROWED BOOKS
@@ -25,7 +33,8 @@ AdminController.getAllPendingBooks = async (req, res)=>{
 
 AdminController.updatingBookControl= async (req, res) => {
 	try {
-		const replacedBook = await adminService.updatingBook(req, res)
+		const { requestId } = req.params
+		const replacedBook = await adminService.updatingBook(requestId)
 		return res.status(200).json({
 			message: "books replaced successfully",
 			data: replacedBook,
@@ -35,6 +44,7 @@ AdminController.updatingBookControl= async (req, res) => {
 		res.status(500).send(error.message);
 	}
 };
+
 
 module.exports = AdminController
 
