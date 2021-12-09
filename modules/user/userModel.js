@@ -54,6 +54,8 @@ const userSchema = new mongoose.Schema({
 //fire a mongoose hook to hash passwords before doc saved to db
 userSchema.pre("save", async function (next) {
 	const salt = await bcrypt.genSalt();
+	console.log("password" + this.password)
+	console.log("salt" + salt)
 	this.password = await bcrypt.hash(this.password, salt);
 	next();
 });

@@ -3,8 +3,8 @@
 const Joi = require("joi");
 
 const strongPasswordRegex = /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/;
-const stringPassswordError = new Error("Password must be strong. At least one upper case alphabet. At least one lower case alphabet. At least one digit. At least one special character. Minimum eight in length")
 
+// const stringPassswordError = new Error("Password must be strong. At least one upper case alphabet. At least one lower case alphabet. At least one digit. At least one special character. Minimum eight in length")
 const phoneNumberValidate = /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/im
 
 const UserValidator = {};
@@ -26,6 +26,7 @@ UserValidator.createUserValidator = Joi.object().keys({
 
      password: Joi.string().regex(strongPasswordRegex).trim().required().messages({
 		'string.base': `"password must be strong". At least one upper case alphabet. At least one lower case alphabet. At least one digit. At least one special character. Minimum 8 in lenght'`,
+		
 		'any.required': `"password" is a required field`,
 	}),
 
@@ -88,16 +89,16 @@ UserValidator.editUserValidator = Joi.object().keys({
 		'any.required': `"address" is a required field`,
 	}),
 	
-	password: Joi.string().regex(strongPasswordRegex).trim().required().messages({
-		'string.base': `"password must be strong". At least one upper case alphabet. At least one lower case alphabet. At least one digit. At least one special character. Minimum 8 in lenght'`,
-		'any.required': `"password" is a required field`,
-	}),
+	// password: Joi.string().regex(strongPasswordRegex).trim().required().messages({
+	// 	'string.base': `"password must be strong". At least one upper case alphabet. At least one lower case alphabet. At least one digit. At least one special character. Minimum 8 in lenght'`,
+	// 	'any.required': `"password" is a required field`,
+	// }),
 
 
-	confirmPassword: Joi.string().regex(strongPasswordRegex).trim().required().messages({
-		'string.base': `"confirmPassword must be strong". At least one upper case alphabet. At least one lower case alphabet. At least one digit. At least one special character. Minimum 8 in lenght'`,
-		'any.required': `"confirmPassword " is a required field`,
-	}),
+	// confirmPassword: Joi.string().regex(strongPasswordRegex).trim().required().messages({
+	// 	'string.base': `"confirmPassword must be strong". At least one upper case alphabet. At least one lower case alphabet. At least one digit. At least one special character. Minimum 8 in lenght'`,
+	// 	'any.required': `"confirmPassword " is a required field`,
+	// }),
 
 });
 

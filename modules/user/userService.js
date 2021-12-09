@@ -47,10 +47,12 @@ UserService.deleteUser = async (req, res) => {
 
 
 UserService.userSignUp = async (req, res) => {
-	if (!req.body.password === req.body.confirmPassword) {
-		// return res.status(401).send({message:"fields do not match"})
-		throw new Error("fields do not match",401)
-	}
+	// if (!req.body.password === req.body.confirmPassword) {
+	// 	// return res.status(401).send({message:"fields do not match"})
+	// 	throw new Error("fields do not match",401)
+	// }
+	console.log("password")
+	console.log(req.body)
 	const user = await UserModel.create(req.body);
 	const token = UserService.generateJwt({ user_id: user._id, roles: req.body.role });
 	return { user, token };
