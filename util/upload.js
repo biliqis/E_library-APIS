@@ -10,9 +10,9 @@ const s3 = new aws.S3({
     secretAccessKey: process.env.AWS_Secret_Key
 });
 
-const multerStorage = multer.diskStorage({
+const multerStorage = multer.memoryStorage({
     destination: (req, file, callback) => {
-        callback(null, "public/images/books");
+        callback(null, "");
     },
     filename: (req, file, callback) => {
         const extension = file.mimetype.split("/")[1];
@@ -29,30 +29,6 @@ const multerFilter = (req, file, cb) => {
         return cb(new Error("Please upload an image of type, jpg/jpeg/png"), false);
     }
 }
-
-// const upload = multer({
-//     storage: multerStorage,
-//     limits: {
-//         fileSize: 1024 * 1024 * 5
-//     },
-//     fileFilter:multerFilter
-// })
-
-
-// const upload = multer({
-//     fileFilter:multerFilter,
-//     storage: multerS3({
-//       acl: "public-read",
-//       s3,
-//       bucket: process.env.AWS_BUCKET_NAME,
-//       metadata: function (req, file, cb) {
-//         cb(null, { fieldName: file.fieldName });
-//       },
-//       key: function (req, file, cb) {
-//         cb(null, Date.now().toString());
-//       },
-//     }),
-//   });
 const upload = multer({
     fileFilter:multerFilter,
     storage: multerS3({

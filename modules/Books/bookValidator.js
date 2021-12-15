@@ -28,11 +28,11 @@ booksValidator.createBookValidator = Joi.object().keys({
 
 
 booksValidator.editUserValidator = Joi.object().keys({
-	authorName: Joi.string().required().error(new Error("Author's name is required")),
-	isbnNumber: Joi.number().required().error(new Error("Book number is required")),
+	authorName: Joi.string().optional().error(new Error("Author's name is required")),
+	isbnNumber: Joi.number().optional().error(new Error("Book number is required")),
 	// noOfCopies: Joi.string().optional().error(new Error("Number of copies is required")),
-	publishDate: Joi.date().required().error(new Error("Publish date address")),
-	pricePerBook: Joi.number().required().error(new Error("price per book is required")),
+	publishDate: Joi.date().optional().error(new Error("Publish date address")),
+	pricePerBook: Joi.number().optional().error(new Error("price per book is required")),
 	description:Joi.string().optional().error(new Error("description field is required")),
 	isAvailable:Joi.boolean().optional().error(new Error("isAvailable field is required")),
 });

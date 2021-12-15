@@ -26,21 +26,7 @@ AdminService.approveBookBorrowingRequest = async (requestId) => {
         await AdminService.reduceNumberOfRequest(requestId)
 
         return BorrowRequest;
-        // let findPendingBookRequest = await borrowingModel.findById(borrowedId);
-        // let pendingBooksRequest = await borrowingModel.findById(borrowedId);
-
-        // //FIND THE ACTUAL BOOK
-        // const book = await bookModel.findById(new ObjectId(findPendingBookRequest.bookId));
-
-        // //REDUCE BOOK COPIES
-        // book.noOfCopies = book.noOfCopies - 1;
-        // await book.markModified("noOfCopies");
-        // await book.save();
-
-        // //UPDATE THE STATUS OF THE BORROWING MODEL
-        // findPendingBookRequest.status = "approved";
-        // await findPendingBookRequest.markModified("status");
-        // await findPendingBookRequest.save();
+        
     } catch (err) {
         console.error(err);
         return res.status(500).send({ message: err.message });

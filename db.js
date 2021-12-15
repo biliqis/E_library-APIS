@@ -19,19 +19,4 @@ module.exports.dbConnect = async () => {
 
 
 
-// const mongodb = require('mongodb');
-// const connectMongodb = require('../db');
-// let DATABASE_CONNECTION = null;
-// function setDb() {
-//   return (
-//     // If we have a database connection
-//     // Return it
-//     // Else
-//     // Regenerate it
-//     DATABASE_CONNECTION ||
-//     connectMongodb().then((client) => {
-//       DATABASE_CONNECTION = client.db('econnect');
-//     })
-//   );
-// }
 

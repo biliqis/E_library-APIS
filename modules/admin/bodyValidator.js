@@ -9,7 +9,7 @@ module.exports.useBodyValidator = (schema) => {
         next();
       } catch (e) {
         const message = e.message;
-        return res.status(404).send({message:message})
+        return res.status(401).send({message:message})
       }
     };
   };
@@ -24,7 +24,7 @@ module.exports.useBodyValidator = (schema) => {
           next();
         } catch (e) {
           const message = e.details[0].message;
-          return next(new BaseError(message, 404));
+          return next(new BaseError(message, 401));
         }
       };
     };

@@ -7,7 +7,6 @@ AdminController.getSingleRequest = async (req, res, next) => {
 	const book = await adminService.getSingleRequest(req, res)
 	return res.status(200).json({ message: "All request retrieved", book })
 }
-
 //APPROVE BORROWED BOOK
 AdminController.approveBookBorrowing = async (req, res) => {
 	try{
@@ -44,7 +43,6 @@ AdminController.updatingBookControl= async (req, res) => {
 		res.status(500).send(error.message);
 	}
 };
-
 
 module.exports = AdminController
 
