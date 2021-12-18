@@ -5,15 +5,13 @@ const fs = require('fs')
 const {cloudinary} = require ("../../util/cloud")
 const mongoose = require('mongoose')
 
-
 const bookController = {}
 //create a book
 bookController.createBook = async (req, res) => {
-    console.log("ndwudwh",  req.file)
     try {
-        const result = req.file.location
+        const result = req.file?.location
         console.log(result)
-              let bookObj = {...req.body,bookCover:result}
+              let bookObj = {...req.body,bookCover:result? result : null}
 
         const bookData = await bookService.createBookService(req,bookObj);
         return res.json({ message:"book created successfully",bookData })
@@ -77,19 +75,10 @@ bookController.getAllBooksPagination = async (req, res, next) => {
         return res.json({ message: err.message })
     }
 }
-
-
 bookController.bookReturned = async(req,res)=>{
 await bookService.updateReturnBook(req.params.id)
 return res.status(200).json({ message: `Books with the ID ${req.params.id} successfully updated` })
 }
-
-
-
-// const findPendingBooks = async (req,res)=>{
-//     const pendingRequests = await bookService.fi({})
-// }
-
 module.exports = bookController
 
 

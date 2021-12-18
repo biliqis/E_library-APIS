@@ -15,12 +15,12 @@ UserValidator.createUserValidator = Joi.object().keys({
 		'string.base': `"lastName" should be a type of 'text'`,
 		'any.required': `"lastName" is a required field`,
 	}),
-	username: Joi.string().trim().required().messages({
+	username: Joi.string().trim().required().lowercase().messages({
 		'string.base': `"username" should be a type of 'text'`,
 		'any.required': `"username" is a required field`,
 	}),
 
-    email: Joi.string().trim().email({ minDomainSegments: 2, tlds: { allow: ['com', 'net'] } }).required().messages({
+    email: Joi.string().trim().email({ minDomainSegments: 2, tlds: { allow: ['com', 'net'] } }).required().lowercase().messages({
 		'string.base': `"email" should be a type of 'email'`,
 		'any.required': `"email" is a required field`,
 	}),
@@ -65,7 +65,7 @@ UserValidator.loginUserValidator = Joi.object().keys({
 		'string.base': `"username" should be a type of 'text'`,
 		'any.required': `"username" is a required field`,
 	}),
-	username: Joi.string().trim().required().messages({
+	username: Joi.string().trim().required().lowercase().messages({
 		'string.base': `"username" should be a type of 'text'`,
 		'any.required': `"username" is a required field`,
 	}),
