@@ -9,6 +9,7 @@ const mongoose = require('mongoose')
 const bookController = {}
 //create a book
 bookController.createBook = async (req, res) => {
+    console.log("ndwudwh",  req.file)
     try {
         const result = req.file.location
         console.log(result)
