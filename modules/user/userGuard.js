@@ -5,24 +5,23 @@ const { UserService } = require("./userService");
 const userGuard = {};
 
 userGuard.userSignUpGuard = async (req) => {
-	// database checks
-	const result = await UserService.countDocuments({
+	const result = await userModel.find({
 		$or: [
 			{
 				email: req.body.email,
 			},
 			{
-				phonenumber: req.body.phonenumber,
+				username: req.body.username,
 			},
 		],
 	});
-	if (result) {
-		throw new Error("Email or Phone number already exist");
+
+	if (result.length) {
+		throw new Error("Email or username already exist");
 	}
 	console.log(result)
 
 };
-
 userGuard.UserValidator = (req, res) => {
 	const result = validationResult(req);
 
@@ -37,8 +36,6 @@ userGuard.UserValidator = (req, res) => {
 		}
 	}
 };
-
-
 userGuard.userEmailExists = async (req) => {
 	try {
 		const result = await UserService.findSingle(
@@ -60,18 +57,32 @@ userGuard.userIdExists = async (req) => {
 		throw new Error("User with id not found!");
 	}
 }
-userGuard.userloginGuard = async (req) => {
-	const { email, password } = req.body;
-	const user = await UserService.findSingle(email);
-	if (!user) {
-		throw new Error("user does not exist!");
+userGuard.userloginGuard = async (req, res, next) => {
+	try {
+		const verify = await UserService.propExists({
+			$or: [
+				{
+					email: req.body.username
+				},
+				{
+					username: req.body.username
+				}
+			]
+		})
+		console.log(verify)
+		if (!verify) 
+		throw new Error("Incorrect username or email", 401);
+		next()
+	} catch (error) {
+		console.error(error)
+		// return res.status(500).json({message:error.message})
 	}
-	let verify = await UserService.comparePassword(password, user.password);
-	if (!verify) {
-		throw new Error("Invaild email or password");
-	}
-	req.user = user;
-}
+	
+};
+
+
+
+
 userGuard.updateUser = async (req) => {
 	const { id } = req.params;
 	try {

@@ -1,18 +1,17 @@
-const bookService = require("../Books/bookService")
-const bookModel = require("../Books/bookModel")
+const bookService = require("./bookService")
+const bookModel = require("./bookModel")
 const path = require('path')
 const fs = require('fs')
 const {cloudinary} = require ("../../util/cloud")
 const mongoose = require('mongoose')
 
-
 const bookController = {}
 //create a book
 bookController.createBook = async (req, res) => {
     try {
-        const result = req.file.location
+        const result = req.file?.location
         console.log(result)
-              let bookObj = {...req.body,bookCover:result}
+              let bookObj = {...req.body,bookCover:result? result : null}
 
         const bookData = await bookService.createBookService(req,bookObj);
         return res.json({ message:"book created successfully",bookData })
@@ -26,6 +25,7 @@ bookController.searchAll = async (req, res) => {
     let searchResults = await bookService.searchBooks(req, res)
     return searchResults
 }
+
 //add a book
 bookController.updateBook = async (req, res, next) => {
     const bookId = req.params.id
@@ -41,6 +41,19 @@ bookController.getAllBooks = async (req, res) => {
     const allBooks = await bookService.getAllBooksPaginated()
     return res.status(200).json({ message: "Books retrieved successfully", allBooks })
 }
+
+
+    bookController.fullSearch = async (req, res) => {
+        try {
+            const allBooks = await bookService.searchBooks(req,res,page=1,limit=10)
+            console.log(req)
+            return res.status(200).json({ message: "Books retrieved successfully", allBooks })
+        } catch (error) {
+            console.error(error)
+            return await res.status(500).json({message:error.message})  
+        }
+}
+
 
 //delete books
 bookController.deleteSingleBook = async (req, res, next) => {
@@ -77,18 +90,9 @@ bookController.getAllBooksPagination = async (req, res, next) => {
     }
 }
 
-
 bookController.bookReturned = async(req,res)=>{
 await bookService.updateReturnBook(req.params.id)
 return res.status(200).json({ message: `Books with the ID ${req.params.id} successfully updated` })
 }
 
-
-
-// const findPendingBooks = async (req,res)=>{
-//     const pendingRequests = await bookService.fi({})
-// }
-
 module.exports = bookController
-
-

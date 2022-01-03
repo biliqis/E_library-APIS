@@ -4,7 +4,6 @@ const path = require('path')
 
 const { countDocuments } = require('../user/userService')
 
-
 const bookService = {};
 
 bookService.bookTitleExists = async (bookTitle) => {
@@ -31,6 +30,18 @@ bookService.getAllBooksPaginated = async (page, limit) => {
 	return books
 }
 
+// bookService.searchText = async (page, book, limit) => {
+// 	let book = req.query.book
+// 	if(book || page || limit) {
+// 		return await bookModel.find({$text: {$search: book }})
+// 		.limit(limit * 1)
+// 		.skip((page - 1) * limit)
+// 		.exec();
+// }
+// return await bookModel.find()
+
+// }
+
 bookService.createBookService = async (req, book) => {
 	try {
 		let newBook = {...book, approved:"pending"}
@@ -54,16 +65,24 @@ bookService.deleteBookService = async (bookId) => {
 	return await bookModel.deleteOne({ _id: bookId });
 }
 
-bookService.searchBooks = async (req, res) => {
+bookService.searchBooks = async (req, res, page, limit) => {
 	try {
+		let bookResult = []
 		let book = req.query.book
-		const bookResult = await bookModel.find({ $text: { $search: book } })
+		if (!book){
+			bookResult = await bookModel.find()
 		if (bookResult.length === 0) return res.status(404).send({ message: `no search results for ${book} found` })
-		return res.status(200).send({ results: bookResult })
+			return await res.status(200).send({ results: bookResult })
+		}
+		bookResult = await bookModel.find({ $text: { $search: book } })
+		.limit(limit * 1)
+		.skip((page - 1) * limit)
+		.exec();
+		if (bookResult.length === 0) return res.status(404).send({ message: `no search results for ${book} found` })
+		
+		return await res.status(200).send({ results: bookResult })
 	} catch (error) {
-		console.error(error)
-		return res.status(500).send({ message: error.message })
-
+		return await res.status(500).send({ message: error.message })
 	}
 }
 bookService.approveBook = async (req, res) => {
@@ -76,8 +95,8 @@ bookService.approveBook = async (req, res) => {
 		return res.status(500).send({ message: error.message })
 
 	}
-
 }
+
     //RETURN BOOKS
 bookService.updateReturnBook =  async(req,res)=>{
 	try {
@@ -91,7 +110,6 @@ bookService.updateReturnBook =  async(req,res)=>{
 		
 	}
 }
-
 
 
 module.exports = bookService

@@ -9,7 +9,6 @@ bookGuard.createBookGuard = async (req, res) => {
     if (exists) throw new Error("Book already exists")
 } 
 
-
 bookGuard.updateBookGuard = async (req, res) => {
     const exists = await bookIdExists(req.params.id);
     if (!exists) return res.status(401).json({ message: `Book with ${req.params.id} does not exit` });

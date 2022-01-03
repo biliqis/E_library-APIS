@@ -13,8 +13,4 @@ router.use("/api/v1/books-borrowing", booksBorrowing);
 router.use("/api/v1/admin-approval", adminRoutes);
 router.use("/", viewsRoutes);
 
-
-
-
-
 module.exports = router;

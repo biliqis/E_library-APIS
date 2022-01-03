@@ -17,7 +17,7 @@ const BookSchema = new Schema(
         },
 
         bookCover: {
-            type: String
+            type: String,
         },
 
         isAvailable: {

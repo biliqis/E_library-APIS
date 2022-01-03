@@ -16,7 +16,6 @@ UserController.userSignUp = async (req, res,next) => {
 	} catch (err) {
 		console.error(err);
 		return res.status(500).json({ message: err.message })
-		// return errorFunction(res,err.message,500)
 	}
 }
 
@@ -94,6 +93,14 @@ UserController.getAllusers = async (req, res)=>{
 		return res.status(500).send({message:err.message})
 	}
 }
+
+
+
+UserController.search = async (req, res)=>{
+	let finalResults = await UserService.searchUser(req, res)
+	return finalResults
+}
+
 
 
 module.exports = UserController

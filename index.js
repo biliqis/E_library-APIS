@@ -13,21 +13,8 @@ const app = express();
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(express.json());
 app.use(morgan("dev"))
-//app.use(express.static("public"));
 
-//app.engine('hbs', engine({extname: "hbs", defaultLayout: "layout", layoutsDir: __dirname + "/views/layouts"}));
-//app.set("view engine", "hbs");
-//app.set('views', './views');
 
-app.use((req, res, next) => {
-	res.setHeader("Access-Control-Allow-Origin", "*");
-	res.setHeader(
-	  "Access-Control-Allow-Methods",
-	  "OPTIONS, GET, POST, PUT, PATCH, DELETE"
-	);
-	res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
-	next();
-  });	
 
 app.use(routes);
 

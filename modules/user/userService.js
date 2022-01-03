@@ -2,73 +2,88 @@ const jwt = require("jsonwebtoken");
 const jwtSecretKey = process.env.JWT_SECRET;
 const expiresIn = process.env.JWT_EXP;
 const bcrypt = require("bcryptjs");
-
-
 const UserModel = require("./userModel");
+const userModel = require("./userModel");
 
 const UserService = {};
 UserService.generateJwt = (userObj) => {
-	return jwt.sign(userObj, jwtSecretKey, {
-		expiresIn: process.env.JWT_EXP,
-	});
+  return jwt.sign(userObj, jwtSecretKey, {
+    expiresIn: process.env.JWT_EXP,
+  }); 
 };
 
 UserService.comparePassword = async (password, password2) => {
-	return bcrypt.compare(password, password2);
+  return bcrypt.compare(password, password2);
 };
 
-UserService.countDocuments = (user) => {
-	return UserModel.countDocuments(user).then((count) => count > 0);
+UserService.propExists = (user) => {
+  return UserModel.countDocuments(user).then((count) => count > 0);
 };
-
 
 //helper function to find a single user before logging in
 UserService.findSingle = (email) => {
-	return UserModel.findOne({ email: email })
-}
+  return UserModel.findOne({ email: email });
+};
 
-//helper function to check if an account already exists
+UserService.findUsernameEmail = (data) => {
+  return UserModel.findOne(data);
+};
+
 UserService.findSingleById = async (id) => {
-	return await UserModel.findById(id)
-}
+  return await UserModel.findById(id);
+};
 
 UserService.updateUser = async (req, res) => {
-	return await UserModel.findByIdAndUpdate(req.params.id, req.body, {
-		new: true,
-	});
-}
+  return await UserModel.findByIdAndUpdate(req.params.id, req.body, {
+    new: true,
+  });
+};
 
 UserService.deleteUser = async (req, res) => {
-	const id = req.params.id;
-	let user =  await UserModel.findById(id)
-	let deleteUser = await UserModel.deleteOne({_id:id})
-	return {user,deleteUser}	
+  const id = req.params.id;
+  let user = await UserModel.findById(id);
+  let deleteUser = await UserModel.deleteOne({ _id: id });
+  return { user, deleteUser };
 };
-
 
 UserService.userSignUp = async (req, res) => {
-	// if (!req.body.password === req.body.confirmPassword) {
-	// 	// return res.status(401).send({message:"fields do not match"})
-	// 	throw new Error("fields do not match",401)
-	// }
-	console.log("password")
-	console.log(req.body)
-	const user = await UserModel.create(req.body);
-	const token = UserService.generateJwt({ user_id: user._id, roles: req.body.role });
-	return { user, token };
-
+  const user = await UserModel.create(req.body);
+  const token = UserService.generateJwt({
+    user_id: user._id,
+    roles: req.body.role,
+  });
+  return { user, token };
 };
-
 
 UserService.userLogin = async (req, res) => {
-	const user = await UserModel.findOne({ email: req.body.email, })
-	const token = UserService.generateJwt({ user_id: user._id, roles: req.body.roles });
-	
-	return { user, token }
+  const user = await UserModel.findOne({
+    $or: [{ username: req.body.username }, { email: req.body.username }],
+  }).select("+password");
+
+  if (!user) throw new Error("not found");
+  if (!bcrypt.compareSync(req.body.password, user.password)) {
+    throw new Error("incorrect credentials!");
+  }
+  const token = UserService.generateJwt({
+    user_id: user._id,
+    roles: user.role,
+  });
+  return { user, token };
 };
 
 
 
+UserService.searchUser = async (req, res)=>{
+  try {
+    let user = req.query.user
+  const userResults = await userModel.find({$text: { $search: user}})
+if(userResults.length === 0)return res.status(404).send({message: " no search result found"})
+return res.status(200).send({results: userResults})
+  } catch (error) {
+    console.error(error)
+    return res.status(500).send({message:err.message})
+  }
+}
 
 
 module.exports.UserService = UserService;
