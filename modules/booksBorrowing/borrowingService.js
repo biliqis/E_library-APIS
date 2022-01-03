@@ -45,7 +45,7 @@ booksBorrowingService.userBorrowBook = async (req, res) => {
 
     const bookDto = {
       bookId: bookData._id,
-      user: singleUser._id,
+      user: singleUser.firstName,
       numberOfDays: Number(req.body.numberOfDays),
       borrowDate: new Date(),
       returnDate: new Date().setDate(
@@ -146,15 +146,11 @@ booksBorrowingService.userBorrowBookById = async (req, res) => {
 //track pending Books using filter method
 booksBorrowingService.pendingBooks = async (req, res) => {
   try {
-    const pendings = await bookBorrowing.find({ status: "pending" }).lean();
-    if (pendings.length === 0)
-      return res
-        .status(404)
-        .json({ message: "there are pending borrowed books!" });
+    const pendings = await bookBorrowing.find({ bookId: req.params.id, status: "pending" }).lean();
     return res.status(200).send({ message: pendings });
   } catch (error) {
     console.error(error);
-    return res.status(500).send({ message: err.message });
+    return res.status(500).send({ message: error.message });
   }
 };
 
@@ -167,7 +163,7 @@ booksBorrowingService.returnBooks = async (req, res) => {
     return res.status(200).send({ data: returnedBooks });
   } catch (error) {
     console.error(error);
-    return res.status(500).send({ message: err.message });
+    return res.status(500).send({ message: error.message });
   }
 };
 //checkUserBorrowOnce
@@ -192,9 +188,7 @@ booksBorrowingService.checkUserBorrowOnce = async (req, res, next) => {
 //get All approve books
 booksBorrowingService.getApproveBook = async (req, res) => {
   try {
-    const approveBooks = await bookBorrowing.find({ status: "approved" });
-    if (approveBooks === 0)
-      return res.status(200).send({ message: "no approved books present" });
+    const approveBooks = await bookBorrowing.find({ bookId: req.params.id, status: "approved" });
     return res.status(200).send({ data: approveBooks });
   } catch (err) {
     console.error(err);

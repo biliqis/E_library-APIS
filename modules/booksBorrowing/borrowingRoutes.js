@@ -12,9 +12,9 @@ const bookGuard = require("../Books/bookGuard");
 
 router.post('/add-borrowed-book',requireAuth, checkUserBorrowOnce, createUserBorrowBook)
 router.get('/get-borrowed-books', requireAuth,getUserBorrowedBooks)
-router.post('/borrow-book',checkUserBorrowOnce,requireAuth, userBorrowBookById)
-router.get('/pending-books', requireAuth, getPendings )
+router.post('/borrow-book',requireAuth, checkUserBorrowOnce, userBorrowBookById)
+router.get('/pending-books/:id', requireAuth, getPendings )
 router.get('/get-return-books', requireAuth, getReturnBooks)
-router.get('/get-approve-books',requireAuth, getAllApproved)
+router.get('/get-approve-books/:id',requireAuth, getAllApproved)
 module.exports = router
 

@@ -22,6 +22,7 @@ booksBorrowingController.getUserBorrowedBooks = async (req,res) => {
 
 
 booksBorrowingController.getPendings = async(req,res)=>{
+    console.log("ok ok pending")
     return await pendingBooks(req,res)
 }
 

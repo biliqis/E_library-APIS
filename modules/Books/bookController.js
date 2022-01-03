@@ -43,15 +43,15 @@ bookController.getAllBooks = async (req, res) => {
 }
 
 
-    bookController.fullSearch = async (req, res) => {
-        try {
-            const allBooks = await bookService.searchBooks(req,res,page=1,limit=10)
-            console.log(req)
-            return res.status(200).json({ message: "Books retrieved successfully", allBooks })
-        } catch (error) {
-            console.error(error)
-            return await res.status(500).json({message:error.message})  
-        }
+bookController.fullSearch = async (req, res) => {
+    const { book, page, limit } = req.query;
+    try {
+        const allBooks = await bookService.searchBooks(book, page, limit)
+        return res.status(200).json({ message: "Books retrieved successfully", allBooks })
+    } catch (error) {
+        console.error(error)
+        return await res.status(500).json({message:error.message})  
+    }
 }
 
 

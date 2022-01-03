@@ -12,7 +12,7 @@ bookService.bookTitleExists = async (bookTitle) => {
 }
 
 bookService.bookIdExists = async (bookId) => {
-	const book = await bookModel.findById(bookId)
+	const book = await bookModel.findById({_id: bookId})
 	if (!book) throw new Error("book not found!",404)
 	return book
 }
@@ -65,25 +65,14 @@ bookService.deleteBookService = async (bookId) => {
 	return await bookModel.deleteOne({ _id: bookId });
 }
 
-bookService.searchBooks = async (req, res, page, limit) => {
-	try {
-		let bookResult = []
-		let book = req.query.book
-		if (!book){
-			bookResult = await bookModel.find()
-		if (bookResult.length === 0) return res.status(404).send({ message: `no search results for ${book} found` })
-			return await res.status(200).send({ results: bookResult })
-		}
-		bookResult = await bookModel.find({ $text: { $search: book } })
+bookService.searchBooks = async (book, page, limit) => {
+	if(book || page || limit) {
+		return await bookModel.find({ $text: { $search: book } })
 		.limit(limit * 1)
 		.skip((page - 1) * limit)
-		.exec();
-		if (bookResult.length === 0) return res.status(404).send({ message: `no search results for ${book} found` })
-		
-		return await res.status(200).send({ results: bookResult })
-	} catch (error) {
-		return await res.status(500).send({ message: error.message })
+		.exec()
 	}
+	return await bookModel.find()
 }
 bookService.approveBook = async (req, res) => {
 	try {
