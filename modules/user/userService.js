@@ -3,12 +3,13 @@ const jwtSecretKey = process.env.JWT_SECRET;
 const expiresIn = process.env.JWT_EXP;
 const bcrypt = require("bcryptjs");
 const UserModel = require("./userModel");
+const userModel = require("./userModel");
 
 const UserService = {};
 UserService.generateJwt = (userObj) => {
   return jwt.sign(userObj, jwtSecretKey, {
     expiresIn: process.env.JWT_EXP,
-  });
+  }); 
 };
 
 UserService.comparePassword = async (password, password2) => {
@@ -69,5 +70,20 @@ UserService.userLogin = async (req, res) => {
   });
   return { user, token };
 };
+
+
+
+UserService.searchUser = async (req, res)=>{
+  try {
+    let user = req.query.user
+  const userResults = await userModel.find({$text: { $search: user}})
+if(userResults.length === 0)return res.status(404).send({message: " no search result found"})
+return res.status(200).send({results: userResults})
+  } catch (error) {
+    console.error(error)
+    return res.status(500).send({message:err.message})
+  }
+}
+
 
 module.exports.UserService = UserService;

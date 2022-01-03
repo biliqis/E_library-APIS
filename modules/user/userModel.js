@@ -14,7 +14,6 @@ const userSchema = new mongoose.Schema({
 	username: {
 		type: String,
 	},
-
 	email: {
 		type: String,
 	},
@@ -44,12 +43,20 @@ const userSchema = new mongoose.Schema({
 		type: String,
 		enum: ["admin", "user"]
 	},
+	createdAt: {
+		type: Date,
+		default: Date.now,
+		expires: 3600,// this is the expiry time in seconds
+	  },
+
+
 
 	address: {
 		type: String,
 	}
 	
 },{timestamps:true});
+userSchema.index({ '$**': 'text' })
 
 //fire a mongoose hook to hash passwords before doc saved to db
 userSchema.pre("save", async function (next) {
