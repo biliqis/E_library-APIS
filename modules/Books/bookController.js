@@ -42,8 +42,8 @@ bookController.getAllBooks = async (req, res) => {
     return res.status(200).json({ message: "Books retrieved successfully", allBooks })
 }
 
-
 bookController.fullSearch = async (req, res) => {
+    console.log("hihi")
     const { book, page, limit } = req.query;
     try {
         const allBooks = await bookService.searchBooks(book, page, limit)
@@ -53,7 +53,6 @@ bookController.fullSearch = async (req, res) => {
         return await res.status(500).json({message:error.message})  
     }
 }
-
 
 //delete books
 bookController.deleteSingleBook = async (req, res, next) => {

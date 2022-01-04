@@ -85,7 +85,6 @@ UserController.logout = async (req, res, next) => {
   }
 
 UserController.getAllusers = async (req, res)=>{
-	console.log("kijji")
 	try {
 		const getUser = await userModel.find({ role: "user"})
 		return res.status(200).send({message: "user details sucessful", getUser})
