@@ -34,5 +34,5 @@ const borrowedBookSchema = new mongoose.Schema({
         default:false
     }
 })
-
+borrowedBookSchema.index({ '$**': 'text' })
 module.exports = mongoose.model("borrowedBook",borrowedBookSchema)
