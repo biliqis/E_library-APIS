@@ -66,10 +66,10 @@ bookService.deleteBookService = async (bookId) => {
 }
 
 bookService.searchBooks = async (book, page, limit) => {
-	if(book || page || limit) {
+	if(book) {
 		return await bookModel.find({ $text: { $search: book } })
-		.limit(limit * 1)
-		.skip((page - 1) * limit)
+		// .limit(limit * 1)
+		// .skip((page - 1) * limit)
 		.exec()
 	}
 	return await bookModel.find()
