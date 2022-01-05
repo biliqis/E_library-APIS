@@ -44,6 +44,10 @@ const BookSchema = new Schema(
             type: Number,
         },
 
+        numberOfRequest:{
+			type: Number
+		},
+
         borrowedCopies: {
             type: Number,
         },

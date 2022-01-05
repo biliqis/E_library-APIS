@@ -53,7 +53,6 @@ booksBorrowingService.propExists = async (prop) => {
 //BORROW BOOKS BY ID
 booksBorrowingService.createBookApplicationService = async (req, res, applicationDetails, requestUser) => {
   const bookDetails = await booksBorrowingService.getSingleBookService({_id: new ObjectID(applicationDetails.bookId)});
-  console.log(requestUser._id)
   
 	const model = await new bookBorrowing({ ...applicationDetails, userId: requestUser._id, appliedBooks: bookDetails, username: requestUser.username }).save();
 

@@ -10,8 +10,7 @@ const bookController = {}
 bookController.createBook = async (req, res) => {
     try {
         const result = req.file?.location
-        console.log(result)
-              let bookObj = {...req.body,bookCover:result? result : null}
+              let bookObj = {...req.body, bookCover:result? result : null}
 
         const bookData = await bookService.createBookService(req,bookObj);
         return res.json({ message:"book created successfully",bookData })
@@ -43,7 +42,6 @@ bookController.getAllBooks = async (req, res) => {
 }
 
 bookController.fullSearch = async (req, res) => {
-    console.log("hihi")
     const { book, page, limit } = req.query;
     try {
         const allBooks = await bookService.searchBooks(book, page, limit)

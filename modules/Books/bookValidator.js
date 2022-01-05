@@ -15,7 +15,7 @@ booksValidator.createBookValidator = Joi.object().keys({
 	availableCopies: Joi.number().default(Joi.ref('noOfCopies')).min(0).optional().messages({
 		"string.base": `"No of copies" should be of type 'number'`,
 		"string.empty": `"Phone number" cannot be an empty field`,
-	  }),
+	}),
 	borrowedCopies: Joi.number().default(0).min(0).optional().messages({
 		"string.base": `"Borrowed copies" should be of type 'number'`,
 		"string.empty": `"Borrowed copies" cannot be an empty field`,
@@ -24,6 +24,15 @@ booksValidator.createBookValidator = Joi.object().keys({
 		"string.base": `"Number of requests" should be of type 'array'`,
 		"string.empty": `"Number of requests" cannot be an empty field`,
 	  }),
+	numberOfRequest: Joi.number().default(0).min(0).optional().messages({
+		"string.base": `"Number of requests" should be of type 'number'`,
+		"string.empty": `"Number of requests" cannot be an empty field`,
+	}),
+
+	bookCover: Joi.string().optional().messages({
+		"string.base": `"Book cover" should be of type 'string'`,
+		"string.empty": `"Book cover" cannot be an empty field`,
+	})
 });
 
 
