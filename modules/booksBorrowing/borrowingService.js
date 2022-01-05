@@ -90,7 +90,6 @@ booksBorrowingService.getBorrowBookByUser = async (req, res) => {
 
 booksBorrowingService.userBorrowBookById = async (req, res) => {
   try {
-    console.log(req.body.bookId);
     const findUser = await bookBorrowing.find({
       userId: new ObjectID(req.user._id),
     });
