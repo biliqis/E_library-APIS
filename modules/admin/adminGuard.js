@@ -19,6 +19,7 @@ AdminApprovalGuard.checkUpdateReturnGuard = async (req, res, next) => {
 	const { requestId } = req.params;
 	const check = await AdminBorrowingGuard.IdExists({ userId: new ObjectId(requestId) });
 	if(!check) throw res.status(400).json({ message: "Invalid request ID"}) 
+    
 
 	const checkIfRequestIsPending = await AdminBorrowingGuard.IdExists({ userId: new ObjectId(requestId)  });
 	if(checkIfRequestIsPending.status === 'pending') if(!check) throw res.status(400).json({ message: "Request cannot be updated as returned yet"}) 
