@@ -1,11 +1,10 @@
-
 const Joi = require("joi");
 
-const booksBorrowingValidator = {};
+const BookApplicationValidator = {};
 
-booksBorrowingValidator.booksBorrowingValidator = Joi.object().keys({
+BookApplicationValidator.createBookApplicationValidator = Joi.object().keys({
 
-  bookId: Joi.string().optional().messages({
+  bookId: Joi.string().required().messages({
     "string.base": `"Book ID" should be of type 'string'`,
     "string.empty": `"Book ID" cannot be an empty string`,
   }),
@@ -15,23 +14,27 @@ booksBorrowingValidator.booksBorrowingValidator = Joi.object().keys({
     "string.empty": `"User ID" cannot be an empty string`,
   }),
 
-  numberOfBooks: Joi.number().integer().default(1).required().messages({
+  numberOfBooks: Joi.number().integer().default(1).messages({
     "string.base": `"Number of books" should be of type 'number'`,
     "string.empty": `"Number of books" cannot be an empty string`,
   }),
+  
+  appliedBooks: Joi.object().optional(),
 
-  returned: Joi.boolean().default(false).optional(),
+  status: Joi.string().valid("pending", "approved", "returned").default('pending').optional(),
 
-  borrowDate: Joi.date().required().messages({
+  borrowDate: Joi.date().default(Date.now()).messages({
     "string.base": `"Borrow date" should be of type 'date'`,
     "string.empty": `"Borrow date" cannot be an empty string`,
   }),
-  
-  returnDate: Joi.date().greater(Joi.ref('borrowDate')).required().messages({
+
+  username: Joi.string().optional(),
+
+  returnDate: Joi.date().greater(Joi.ref('borrowDate')).messages({
     "string.base": `"Return date" should be of type 'number'`,
     "string.empty": `"Return date" cannot be an empty string`,
   })
 
 })
 
-module.exports = { booksBorrowingValidator }
+module.exports = { BookApplicationValidator }

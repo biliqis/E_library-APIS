@@ -18,29 +18,28 @@ AdminService.getSingleRequest = async (req, res) => {
 };
 
 //APPROVE TO BORROW A BOOK
-AdminService.approveBookBorrowingRequest = async (requestId) => {
-    try {
-        let reduceAvailableBooks = await AdminService.initiateAvailableBooksReduction(requestId);
-        let initiateBookBorrowedAddition = await AdminService.initiateBookBorrowedAddition(requestId);
-        let BorrowRequest = await borrowingModel.findOneAndUpdate({ userId: new ObjectId(requestId) }, { $set: {'status': 'approved'}}, { new: true }).exec();
-        await AdminService.reduceNumberOfRequest(requestId)
+// AdminService.approveBookBorrowingRequest = async (requestId) => {
+//     let reduceAvailableBooks = await AdminService.initiateAvailableBooksReduction(requestId);
+//     let initiateBookBorrowedAddition = await AdminService.initiateBookBorrowedAddition(requestId);
+//     let BorrowRequest = await borrowingModel.findOneAndUpdate({ userId: new ObjectId(requestId) }, { $set: {'status': 'approved'}}, { new: true }).exec();
+//     await AdminService.reduceNumberOfRequest(requestId)
 
-        return BorrowRequest;
-        
-    } catch (err) {
-        console.error(err);
-        return res.status(500).send({ message: err.message });
-    }
+//     return BorrowRequest;
+  
+// }
+
+AdminService.approveBookBorrowingRequest = async(requestIds, bookId) => {
+	await bookModel.findOneAndUpdate( {_id: new ObjectId(bookId)}, 
+        {$inc : {'availableCopies': -(requestIds.match(/,/g) || [].length + 1), 'borrowedCopies': (requestIds.match(/,/g) || []).length + 1, 'numberOfRequest': -(requestIds.match(/,/g) || [].length + 1)}}, { new: true }).exec();
+	
+		return await borrowingModel.updateMany({_id: {$in : requestIds }},  { $set: {'status': 'approved'}}, {multi: true})
 }
+
 //GET ALL BORROWED BOOKS REQUEST
 AdminService.getAllBorrowRequest = async (req, res) => {
-    try {
-        const allBooks = await borrowingModel.find().populate('bookId')
-        return res.status(200).send({ message: "All books request successful", allBooks })
-    } catch (error) {
-        console.err(error)
-        return res.status(500).send({ message: error.message })
-    }
+    const allBooks = await borrowingModel.find().populate('bookId')
+    return res.status(200).send({ message: "All books request successful", allBooks })
+    
 }
 
 AdminService.reduceNumberOfRequest = async(requestId) => {
@@ -67,39 +66,21 @@ AdminService.getAllPendingRequest = async (req, res) => {
         const pendingBooks = await borrowingModel.find({ status: "pending" }).populate('bookId')
         return res.status(200).send({ message: "pending books request successful", pendingBooks })
     } catch (error) {
-        console.err(error)
+        console.log(error)
         return res.status(500).send({ message: error.message })
     }
 }
 
+AdminService.updatingBook = async(requestIds, bookId) => {
+	await bookModel.findOneAndUpdate( {_id: new ObjectId(bookId)}, 
+	{$inc : {'availableCopies': (requestIds.match(/,/g) || []).length + 1, 'borrowedCopies': -(requestIds.match(/,/g) || [].length + 1)}}, { new: true }).exec();
+	let BorrowRequest = await borrowingModel.updateMany({_id: {$in : requestIds }},  { $set: {'status': 'returned'}}, {multi: true})
 
-AdminService.updatingBook = async (requestId) => {
-    let increaseAvailableBooks = await AdminService.initiateBookBorrowedAddition(requestId);
-    let initiateBookBorrowedReduction = await AdminService.initiateBookBorrowedReduction(requestId);
-    await AdminService.increaseNumberOfRequest(requestId);
-    return await borrowingModel.findOneAndUpdate({ userId: new ObjectId(requestId) }, { $set: {'status': 'returned'}}, { new: true }).exec();
+	return BorrowRequest;
 }
 
 AdminService.getSingleBorrowRequestService = async (requestId) => {
 	return await borrowingModel.findOne({userId: requestId });
-}
-
-AdminService.initiateBookBorrowedAddition = async (requestId) => {
-	let BorrowRequest = await AdminService.getSingleBorrowRequestService(requestId);
-    return await bookModel.findOneAndUpdate( { bookId: new ObjectId(BorrowRequest.bookId) }, 
-        {$inc : {'borrowedCopies': +1}}, { new: true }).exec();
-}
-
-AdminService.increaseNumberOfRequest = async(requestId) => {
-	let BorrowRequest = await AdminService.getSingleBorrowRequestService(requestId);
-    await bookModel.findOneAndUpdate( {_id: new ObjectId(BorrowRequest.bookId)}, 
-    { $inc: {'numberOfRequest': 1}}, { new: true }).exec();
-}
-
-AdminService.initiateBookBorrowedReduction = async (requestId) => {
-	let BorrowRequest = await AdminService.getSingleBorrowRequestService(requestId);
-    return await bookModel.findOneAndUpdate( { bookId: new ObjectId(BorrowRequest.bookId) }, 
-        {$inc : {'borrowedCopies': -1}}, { new: true }).exec();
 }
 
 module.exports = AdminService

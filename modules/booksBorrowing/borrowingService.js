@@ -3,12 +3,12 @@ const User = require("../user/userModel");
 const bookBorrowing = require("./borrowingModel");
 const { bookTitleExists, bookIdExists } = require("../Books/bookService");
 const ObjectID = require("mongodb").ObjectId;
-const { checkIfBooksExists } = require("./borrowingGuard");
+// const { checkIfBooksExists } = require("./borrowingGuard");
 const { UserService } = require("../user/userService");
 const bookService = require("../Books/bookService");
 
 //FIND BOOK IN STORE BY ID
-booksBorrowingService = {};
+const booksBorrowingService = {};
 module.exports.startAndEndDates = (startDate, days) => {
   const endDate = new Date().setDate(startDate.getDate() + days);
   if (days > 3)
@@ -29,48 +29,9 @@ booksBorrowingService.findBookById = async (req, res) => {
   }
 };
 
-// booksBorrowingService.userBorrowBook = async (req, res) => {
-//   try {
-//     const singleUser = await User.findOne({ _id: new ObjectID(req.user._id) });
-
-//     if (!singleUser) throw new Error("user not found!");
-//     let bookId = req.body.bookId;
-//     const bookData = await bookIdExists(bookId);
-//     return res.status(200).send({ message: "success", bookData });
-//     if (!bookData) {
-//       return res.status(404).send({ message: "book not found" });
-//       //throw new Error("book not found")
-//     }
-
-//     const bookDto = {
-//       bookId: bookData._id,
-//       user: singleUser.firstName,
-//       numberOfDays: Number(req.body.numberOfDays),
-//       borrowDate: new Date(),
-//       returnDate: new Date().setDate(
-//         new Date().getDate() + req.body.numberOfDays
-//       ),
-//     };
-//     //check if the book exists
-//     await checkIfBooksExists(bookDto.bookId);
-
-//     const findBook = await bookModel.findOne({ _id: bookDto.bookId });
-//     console.log(findBook);
-//     // // if (!findBook) throw new Error("this book cannot be found!")
-//     // let checkFunc = await this.checkNumBooks(bookDto.numberOfBooksToBeBorrowed,findBook.numberOfBooksInStore)
-//     if (findBook.noOfCopies <= 1) {
-//       return res
-//         .status(400)
-//         .json({
-//           message:
-//             "You cannot borrow all or more than the number of books in store",
-//         });
-//     }
-//   } catch (err) {
-//     console.error(err);
-//     return res.status(500).send({ message: err.message });
-//   }
-// };
+booksBorrowingService.getSingleBookService = async (requestId) => {
+	return await bookModel.findOne(requestId);
+},
 
 booksBorrowingService.getBorrowBookByUser = async (req, res) => {
   try {
@@ -85,66 +46,44 @@ booksBorrowingService.getBorrowBookByUser = async (req, res) => {
   }
 };
 
-//BORROW BOOKS BY ID
-
-booksBorrowingService.userBorrowBookById = async (req, res) => {
-  try {
-    const findUser = await bookBorrowing.find({
-      userId: new ObjectID(req.user._id),
-    });
-    // if(findUser.length > 1) throw new Error("You cannot make request, your previous request will be duely attended to!")
-    const singleUser = await User.findOne({ _id: new ObjectID(req.user._id) });
-    if (!singleUser) throw new Error("user not found!");
-    await bookModel.updateOne(
-      { _id: new ObjectID(req.body.bookId) },
-      { $push: { requestUsers: singleUser } }
-    );
-    let borrowedBooks = req.body.bookId;
-    let bookData = await bookIdExists(borrowedBooks);
-    if (!bookData) {
-      throw new Error("book not found");
-    }
-
-    const bookDto = {
-      bookId: bookData._id,
-      user: singleUser.firstName,
-      numberOfDays: Number(req.body.numberOfDays),
-      borrowDate: new Date(),
-      returnDate: new Date().setDate(
-        new Date().getDate() + req.body.numberOfDays
-      ),
-    };
-
-    if (bookData.noOfCopies <= 1) {
-      return res
-        .status(400)
-        .json({
-          message:
-            "You cannot borrow all or more than the number of books in store",
-        });
-    }
-
-    this.startAndEndDates(bookDto.borrowDate, bookDto.numberOfDays);
-    let newBorrow = new bookBorrowing(bookDto);
-    await newBorrow.save();
-    return res
-      .status(201)
-      .send({
-        success: true,
-        message:
-          "request submitted successfully, the moderators will review your request",
-        newBorrow,
-      });
-  } catch (error) {
-    console.error(error);
-    return res.status(500).send({ message: error.message });
-  }
+booksBorrowingService.propExists = async (prop) => {
+	return bookModel.countDocuments(prop).then((count) => count > 0);
 };
+
+//BORROW BOOKS BY ID
+booksBorrowingService.createBookApplicationService = async (req, res, applicationDetails, requestUser) => {
+  const bookDetails = await booksBorrowingService.getSingleBookService({_id: new ObjectID(applicationDetails.bookId)});
+  console.log(requestUser._id)
+  
+	const model = await new bookBorrowing({ ...applicationDetails, userId: requestUser._id, appliedBooks: bookDetails, username: requestUser.username }).save();
+
+    const dataPz = await bookModel.updateOne({_id: new ObjectID(bookDetails._id)},  {$push: { requestUsers: requestUser }})
+    if( applicationDetails.numberOfBooks > 1 || applicationDetails.numberOfBooks < 1 ) return res.status(400).json({ message: "You cannot select number of copies more than 1, neither can it be greater than one for the same type of book"})
+	  await booksBorrowingService.increaseNumberOfRequest(bookDetails._id)
+    return  model;
+}
+
+booksBorrowingService.countBooksAvailable = async(bookId) => {
+  const requestedBook =  await booksBorrowingService.getSingleBookService({ _id: new ObjectID(bookId) });
+      if(requestedBook.noOfCopies < 1){
+          await bookModel.findOneAndUpdate( {id: new ObjectID(bookId)}, 
+          { $set: {'isAvailable': false}}, { new: true }).exec();
+      };
+      return requestedBook;
+}
+
+booksBorrowingService.increaseNumberOfRequest = async(bookId) => {
+  await bookModel.findOneAndUpdate( {id: new ObjectID(bookId)}, 
+  { $inc: {'numberOfRequest': +1}}, { new: true }).exec();
+}
 
 //track pending Books using filter method
 booksBorrowingService.pendingBooks = async (req, res) => {
   try {
-    const pendings = await bookBorrowing.find({ bookId: req.params.id, status: "pending" }).lean();
+
+    const pendings = await bookBorrowing.find({ bookId: new ObjectID(req.params.id), status: "pending" }).lean();
+    // const pendings = await bookBorrowing.find().lean();
+    console.log(pendings)
     return res.status(200).send({ message: pendings });
   } catch (error) {
     console.error(error);
@@ -184,6 +123,10 @@ booksBorrowingService.checkUserBorrowOnce = async (req, res, next) => {
     return res.status(500).send({ message: err.message });
   }
 };
+
+booksBorrowingService.getAllBorrowedBooksByAUserService = async(userId) => {
+  return bookBorrowing.find({userId: new ObjectID(userId), status: 'approved'})
+}
 //get All approve books
 booksBorrowingService.getApproveBook = async (req, res) => {
   try {
@@ -194,4 +137,5 @@ booksBorrowingService.getApproveBook = async (req, res) => {
     return res.status(500).send({ message: err.message });
   }
 };
-module.exports = booksBorrowingService;
+
+module.exports = { booksBorrowingService };

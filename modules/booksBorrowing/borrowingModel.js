@@ -1,38 +1,31 @@
-const { string } = require("joi")
-const mongoose = require("mongoose")
-const bookSchema = require('../Books/bookModel')
+const mongoose =require("mongoose")
+const { Schema } = mongoose
 
-const borrowedBookSchema = new mongoose.Schema({
+const applicationSchema = new Schema({
     bookId: {
-        type:mongoose.Schema.Types.ObjectId,
-        ref:"book"
+        type: mongoose.Schema.Types.ObjectId,
     },
-
-    user:{
-        type:mongoose.Schema.Types.ObjectId,
-        ref:"Users"
+    userId: {
+        type: mongoose.Schema.Types.ObjectId
     },
-    numberOfBooksToBeBorrowed: {
-        type: Number,
-        default:1
+    username:{
+        type: String
     },
-    
+    appliedBooks: {
+        type: Object
+    },
+    numberOfBooks: {
+        type: Number
+    },
     borrowDate: {
-        type: Date,
-        default:Date.now
+        type: Date
     },
-
     returnDate: {
         type: Date
     },
-    status:{
-        type:String,
-        default:"pending"
-    },
-    returned:{
-        type:Boolean,
-        default:false
+    status: {
+        type: String
     }
 })
-borrowedBookSchema.index({ '$**': 'text' })
-module.exports = mongoose.model("borrowedBook",borrowedBookSchema)
+
+module.exports = mongoose.model("apply", applicationSchema)
