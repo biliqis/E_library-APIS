@@ -5,6 +5,7 @@ const { UserService } = require("./userService");
 const userGuard = {};
 
 userGuard.userSignUpGuard = async (req) => {
+
 	const result = await userModel.find({
 		$or: [
 			{
@@ -19,9 +20,9 @@ userGuard.userSignUpGuard = async (req) => {
 	if (result.length) {
 		throw new Error("Email or username already exist");
 	}
-	console.log(result)
 
 };
+
 userGuard.UserValidator = (req, res) => {
 	const result = validationResult(req);
 
@@ -57,6 +58,7 @@ userGuard.userIdExists = async (req) => {
 		throw new Error("User with id not found!");
 	}
 }
+
 userGuard.userloginGuard = async (req, res, next) => {
 	try {
 		const verify = await UserService.propExists({

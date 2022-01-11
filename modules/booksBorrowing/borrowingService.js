@@ -74,7 +74,8 @@ booksBorrowingService.countBooksAvailable = async(bookId) => {
 }
 
 booksBorrowingService.increaseNumberOfRequest = async(bookId) => {
-  await bookModel.findOneAndUpdate( {id: new ObjectID(bookId)}, 
+  //await bookModel.findOneAndUpdate( {id: new ObjectID(bookId)}, 
+  await bookModel.findOneAndUpdate( {id: bookId}, 
   { $inc: {'numberOfRequest': +1}}, { new: true }).exec();
 }
 

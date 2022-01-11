@@ -5,7 +5,6 @@ module.exports.useGuard = (guard) => {
 			next()
 		} catch (e) {
 			console.error(e)
-			// TODO: CUSTOMIZE TO YOUR NEED LATER
 			return res.json({ message: e.message });
 		}
 
