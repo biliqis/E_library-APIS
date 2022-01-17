@@ -20,6 +20,17 @@ UserService.propExists = (user) => {
   return UserModel.countDocuments(user).then((count) => count > 0);
 };
 
+
+UserService.searchUsers = async (user, page, limit) => {
+	if(user) {
+		return await userModel.find({ $text: { $search: user } })
+		.exec()
+	}
+	return await userModel.find()
+}
+
+
+
 //helper function to find a single user before logging in
 UserService.findSingle = (email) => {
   return UserModel.findOne({ email: email });
@@ -73,16 +84,11 @@ UserService.userLogin = async (req, res) => {
 
 
 
-UserService.searchUser = async (req, res)=>{
-  try {
-    let user = req.query.user
-  const userResults = await userModel.find({$text: { $search: user}})
-if(userResults.length === 0)return res.status(404).send({message: " no search result found"})
-return res.status(200).send({results: userResults})
-  } catch (error) {
-    console.error(error)
-    return res.status(500).send({message:err.message})
-  }
+UserService.searchUser = async (user, page, limit)=>{
+    if(user) {
+      return await userModel.find({$text: { $search: user}, role:"user"})
+    }
+    return await userModel.find({role:"user"})
 }
 
 

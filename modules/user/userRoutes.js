@@ -1,7 +1,5 @@
 const router = require("express").Router();
 const { useBodyValidator, useQueryValidator }= require("./bodyValidator");
-
-
 const  { UserValidator } = require("./userValidation")
 const userController  = require("./userController")
 const { requireAuth } = require("../../middleware/auth.guard");

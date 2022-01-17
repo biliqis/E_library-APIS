@@ -86,11 +86,13 @@ UserController.logout = async (req, res, next) => {
 
 UserController.getAllusers = async (req, res)=>{
 	try {
-		const getUser = await userModel.find({ role: "user"})
+		const {limit, page, user} = req.query
+		console.log(req.query.user)
+		const getUser = await UserService.searchUsers(user, page, limit)
 		return res.status(200).send({message: "user details sucessful", getUser})
 	} catch (error) {
-		console.err(error)
-		return res.status(500).send({message:err.message})
+		// console.err(error)
+		return res.status(500).send({message:error.message})
 	}
 }
 

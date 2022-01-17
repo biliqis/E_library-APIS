@@ -25,6 +25,17 @@ bookController.searchAll = async (req, res) => {
     return searchResults
 }
 
+bookController.searchAll = async (req, res) => {
+    let searchResults = await bookService.searchBooks(req, res)
+    return searchResults
+}
+
+bookController.searchAllUser = async (req, res) => {
+    let results = await bookService.searchUsers(req, res)
+    return results
+}
+
+
 //add a book
 bookController.updateBook = async (req, res, next) => {
     const bookId = req.params.id
